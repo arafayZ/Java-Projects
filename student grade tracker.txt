@@ -1,0 +1,40 @@
+import java.util.*;
+import java.util.ArrayList;
+public class Main {
+    public static void main(String[] args) 
+    {
+      Scanner scanner = new Scanner(System.in);
+      ArrayList<Integer> scores = new ArrayList<Integer>(); 
+      
+      while (true)
+      {
+        System.out.println("Enter the scores:");
+        int grade = scanner.nextInt();
+        if(grade == -1)
+        {
+          break;
+        }
+        scores.add(grade);
+      }
+      int total = 0;
+      int highest = scores.get(0);
+      int lowest = scores.get(0);
+
+      for (int grade : scores) 
+      {
+        total += grade;
+        if (grade > highest) 
+        {
+          highest = grade;
+        }
+        if (grade < lowest) 
+        {
+          lowest = grade;
+        }
+      }
+      double average = (double) total / scores.size();
+      System.out.println("Average grade: " + average);
+      System.out.println("Highest grade: " + highest);
+      System.out.println("Lowest grade: " + lowest);
+    }
+}
