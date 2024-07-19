@@ -1,0 +1,143 @@
+import java.util.Scanner;
+
+class Stock {
+    String name;
+    double price;
+
+    Stock(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+}
+
+class Portfolio {
+    String[] stockNames = {"AAPL", "GOOGL", "AMZN"};
+    int[] quantities = new int[stockNames.length];
+    double cash = 1000.0;
+
+    void buyStock(String stockName, int quantity, double price) {
+        int index = getStockIndex(stockName);
+        if (index != -1 && cash >= quantity * price) {
+            quantities[index] += quantity;
+            cash -= quantity * price;
+            System.out.println("Bought " + quantity + " shares of " + stockName);
+        } else {
+            System.out.println("Not enough cash to buy " + quantity + " shares of " + stockName);
+        }
+    }
+
+    void sellStock(String stockName, int quantity, double price) {
+        int index = getStockIndex(stockName);
+        if (index != -1 && quantities[index] >= quantity) {
+            quantities[index] -= quantity;
+            cash += quantity * price;
+            System.out.println("Sold " + quantity + " shares of " + stockName);
+        } else {
+            System.out.println("Not enough shares to sell " + quantity + " shares of " + stockName);
+        }
+    }
+
+    void viewPortfolio() {
+        System.out.println("Portfolio:");
+        for (int i = 0; i < stockNames.length; i++) {
+            System.out.println(stockNames[i] + ": " + quantities[i] + " shares");
+        }
+        System.out.println("Cash: $" + cash);
+    }
+
+    int getStockIndex(String stockName) {
+        for (int i = 0; i < stockNames.length; i++) {
+            if (stockNames[i].equals(stockName)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+public class StockTradingPlatform {
+    static Stock[] marketData = {
+        new Stock("AAPL", 150.0),
+        new Stock("GOOGL", 2800.0),
+        new Stock("AMZN", 3400.0)
+    };
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Portfolio portfolio = new Portfolio();
+        String input;
+        do {
+            System.out.println("Enter a command (view, buy, sell, portfolio, quit):");
+            input = scanner.nextLine();
+            String[] parts = input.split(" ");
+            String command = parts[0];
+
+            switch (command) {
+                case "view":
+                    viewMarketData();
+                    break;
+                case "buy":
+                    if (parts.length < 3) {
+                        System.out.println("Usage: buy <stock> <quantity>");
+                        break;
+                    }
+                    String stockToBuy = parts[1];
+                    int quantityToBuy = Integer.parseInt(parts[2]);
+                    buyStock(portfolio, stockToBuy, quantityToBuy);
+                    break;
+                case "sell":
+                    if (parts.length < 3) {
+                        System.out.println("Usage: sell <stock> <quantity>");
+                        break;
+                    }
+                    String stockToSell = parts[1];
+                    int quantityToSell = Integer.parseInt(parts[2]);
+                    sellStock(portfolio, stockToSell, quantityToSell);
+                    break;
+                case "portfolio":
+                    portfolio.viewPortfolio();
+                    break;
+                case "quit":
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Unknown command");
+                    break;
+            }
+        } while (!input.equals("quit"));
+    }
+
+    static void viewMarketData() {
+        System.out.println("Market Data:");
+        for (Stock stock : marketData) {
+            System.out.println(stock.name + ": $" + stock.price);
+        }
+    }
+
+    static void buyStock(Portfolio portfolio, String stockName, int quantity) {
+        Stock stock = getStock(stockName);
+        if (stock != null) {
+            portfolio.buyStock(stockName, quantity, stock.price);
+        } else {
+            System.out.println("Stock " + stockName + " not found");
+        }
+    }
+
+    static void sellStock(Portfolio portfolio, String stockName, int quantity) {
+        Stock stock = getStock(stockName);
+        if (stock != null) {
+            portfolio.sellStock(stockName, quantity, stock.price);
+        } else {
+            System.out.println("Stock " + stockName + " not found");
+        }
+    }
+
+    static Stock getStock(String stockName) {
+        for (Stock stock : marketData) {
+            if (stock.name.equals(stockName)) {
+                return stock;
+            }
+        }
+        return null;
+    }
+}
